@@ -1,0 +1,7 @@
+.env
+predictai_auth.db
+predictai_auth.db-shm
+predictai_auth.db-wal
+.venv/
+__pycache__/
+*.pyc
