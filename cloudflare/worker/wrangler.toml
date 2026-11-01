@@ -1,0 +1,9 @@
+name = "predictai-accounts"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[[d1_databases]]
+binding = "D1"
+database_name = "predictai-accounts"
+database_id = "bb8928a4-382c-4381-8923-41c4c676124d"
+migrations_dir = "migrations"

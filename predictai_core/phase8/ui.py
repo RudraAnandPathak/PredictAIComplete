@@ -49,4 +49,4 @@ def render_phase8_page():
             st.caption('Special access is stored on the account and persists across sign-ins. This phase does not yet include the owner analytics dashboard.')
         else:
             st.info('You are currently using PredictAI without a signed-in account. Account sign-in can be enabled from the main app when configured.')
-        st.warning('This account store is designed for local testing. Before public deployment, use a managed identity provider, HTTPS, rate limiting, and server-side secret management.')
+        st.info('Production accounts are stored in Cloudflare D1 through the authenticated account service. The service credentials stay on the server and are never sent to browser code.')

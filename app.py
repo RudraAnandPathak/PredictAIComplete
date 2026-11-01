@@ -99,7 +99,8 @@ hr { border-color:var(--pai-line) !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# Phase 8 account gate. The database is local to this installation by default.
+# Phase 8 account gate. Production uses the authenticated Cloudflare D1 API;
+# SQLite is available only when PREDICTAI_ACCOUNT_MODE=local (local development).
 from predictai_core.phase8.accounts import register as register_account, authenticate, record_event, get_account_status, daily_task_usage, reserve_daily_task, finish_daily_task
 if "predictai_user" not in st.session_state:
     st.session_state["predictai_user"] = None
@@ -120,7 +121,7 @@ if not st.session_state["predictai_user"]:
         st.markdown('<div class="pai-eyebrow">Welcome back</div>', unsafe_allow_html=True)
         st.markdown("## Sign in to PredictAI")
         st.caption("Your workspace is ready when you are.")
-        login_tab, register_tab, owner_tab = st.tabs(["Sign in", "Create account", "Special Owner Access Code"])
+        login_tab, register_tab = st.tabs(["Sign in", "Create account"])
         with login_tab:
             with st.form("p8_login_form"):
                 login_name = st.text_input("Username")
@@ -141,43 +142,28 @@ if not st.session_state["predictai_user"]:
                 elif not service_error:
                     st.error("Username or password is incorrect.")
         with register_tab:
-            st.caption("Create an account with a username and password. Email is optional.")
+            st.caption("Use a unique username, email, full legal name, and a password of at least 12 characters.")
             with st.form("p8_register_form"):
                 new_name = st.text_input("Choose username")
+                new_email = st.text_input("Email address")
+                new_full_name = st.text_input("Full legal name")
                 new_password = st.text_input("Choose password", type="password")
                 confirm_password = st.text_input("Confirm password", type="password")
+                special_code = st.text_input("Special access code (optional)", type="password", help="Only enter a code provided by the PredictAI owner.")
+                owner_setup_secret = st.text_input("Owner setup secret (configured owner only)", type="password", help="Only the configured owner should use this secret.")
                 register_submit = st.form_submit_button("Create account", type="primary")
             if register_submit:
                 if new_password != confirm_password:
                     st.error("The passwords do not match.")
                 else:
                     try:
-                        account = register_account(new_name, new_password)
+                        account = register_account(new_name, new_password, special_code, owner_setup_secret, new_email, new_full_name)
                         st.session_state["predictai_user"] = account
                         st.success("Account created.")
                         st.rerun()
                     except (ValueError, RuntimeError) as exc:
                         st.error(str(exc))
-        with owner_tab:
-            st.caption("Initialize the one configured owner account with its one-time bootstrap code. You will use your username and password for future sign-ins.")
-            with st.form("p8_owner_bootstrap_form"):
-                owner_name = st.text_input("Configured owner username")
-                owner_password = st.text_input("Choose owner password", type="password")
-                owner_password_confirm = st.text_input("Confirm owner password", type="password")
-                owner_bootstrap_code = st.text_input("Special Owner Access Code", type="password")
-                owner_submit = st.form_submit_button("Initialize owner account", type="primary")
-            if owner_submit:
-                if owner_password != owner_password_confirm:
-                    st.error("The passwords do not match.")
-                else:
-                    try:
-                        account = register_account(owner_name, owner_password, owner_setup_secret=owner_bootstrap_code)
-                        st.session_state["predictai_user"] = account
-                        st.success("Owner account initialized. The bootstrap code cannot be used again.")
-                        st.rerun()
-                    except (ValueError, RuntimeError) as exc:
-                        st.error(str(exc))
-        st.info("Special access is optional and separate from ownership. The owner can grant or revoke it after signing in.")
+        st.info("For special access, ask the PredictAI owner for a code. Account data is stored in the configured account service.")
     st.stop()
 
 st.markdown("""

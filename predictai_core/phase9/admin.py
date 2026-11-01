@@ -84,11 +84,10 @@ def render_owner_dashboard(user: dict):
     else:
         st.info("No usage events have been recorded yet.")
     st.subheader("⚙️ Platform configuration status")
+    remote_accounts = bool(_setting("PREDICTAI_API_URL") and _setting("PREDICTAI_API_TOKEN"))
     st.write({
         "Cloudflare AI configured": bool(_setting("CLOUDFLARE_ACCOUNT_ID") and _setting("CLOUDFLARE_API_TOKEN")),
-        "Special access management": "Owner-granted and revocable",
-        "Owner bootstrap secret configured": bool(_setting("PREDICTAI_OWNER_SETUP_SECRET")),
-        "Cloudflare D1 account storage configured": bool(_setting("PREDICTAI_API_URL") and _setting("PREDICTAI_API_TOKEN")),
+        "Account storage": "Cloudflare D1 API" if remote_accounts else "Local development SQLite" if _setting("PREDICTAI_ACCOUNT_MODE", "remote") == "local" else "Not configured",
         "Regular-user document limit": REGULAR_DOCUMENT_LIMIT,
         "Pages per regular-user document": REGULAR_PAGES_PER_DOCUMENT,
     })

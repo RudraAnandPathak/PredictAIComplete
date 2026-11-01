@@ -1,7 +1,7 @@
 # Security integration status
 
-The active application uses `predictai_core.phase8.accounts` sign-in/registration and `predictai_core.phase9.admin` owner dashboard. The separate security bundle remains preserved in `security_upgrade_reference/`; it is not imported into the active application.
+The active application currently uses the recovered `predictai_core.phase8.accounts` sign-in/registration and `predictai_core.phase9.admin` owner dashboard. The separate `PredictAI_Secure_Upgrade_Bundle` and `PredictAI_User_Management_UI_Upgrade` have been preserved in `security_upgrade_reference/` so their code is not lost.
 
-The active local account flow hashes passwords with PBKDF2, grants one owner through a one-time bootstrap secret, and stores revocable special access separately. Owner-only user and analytics operations confirm the role against the local account database. Owner bootstrap is consumed atomically and is tied to the account created with it.
+They are not activated by this recovery build because the security bundle's authentication/session API is different from the Phase 8 account gate. Blindly copying `auth_security.py` and `user_management.py` would not automatically integrate email verification, user blocking, or audit logging into every existing workspace. A deliberate adapter and tests are required.
 
-The app remains for local evaluation. Before public deployment, use a managed identity provider and a server-side account service that independently verifies roles, owner initialization and special-access changes. Add HTTPS, rate limiting, session protections, database isolation, secret management, backups and a security review. Do not treat client supplied role data or the shared account-service API token as user authentication.
+Before public deployment, integrate and test the desired protections, including email verification, blocking/status enforcement at every protected action, authorization on the server side, rate limiting, secure cookie/session handling appropriate to the hosting platform, secret management, data isolation, backups, and HTTPS. This package is for local evaluation, not public production hosting.

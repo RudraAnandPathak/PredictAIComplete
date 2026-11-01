@@ -5,11 +5,10 @@ special-access management, usage event summaries, and the Regular User document-
 
 ## Owner setup
 1. Copy `.env.example` to `.env` only if you do not already have a `.env`; preserve existing Cloudflare credentials.
-2. Set `PREDICTAI_OWNER_USERNAME` to the only username permitted to become owner.
-3. Set `PREDICTAI_OWNER_SETUP_SECRET` to a random value generated from at least 32 bytes of entropy.
-4. Restart Streamlit. Open the third **Special Owner Access Code** tab and initialize the configured username with a password and the one-time setup secret.
-5. The database atomically consumes bootstrap after the first successful owner initialization. Remove the secret from `.env`; later accounts cannot claim owner. Special access is granted and revoked by the owner after account creation.
-6. Keep `.env` private and out of version control.
+2. Set `PREDICTAI_OWNER_USERNAME` and a long private `PREDICTAI_OWNER_SETUP_SECRET`.
+3. Restart Streamlit. Register the configured username and enter the matching owner setup secret.
+4. Only that first successful owner initialization is accepted. The special-access code never grants owner status.
+5. Keep `.env` private and out of version control.
 
 ## Run
 ```bash

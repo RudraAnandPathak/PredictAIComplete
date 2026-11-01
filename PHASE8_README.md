@@ -6,8 +6,8 @@ Phase 8 builds on Phase 7 while retaining Core Analysis and Exam Intelligence.
 
 - **Intelligent Explanation Layer:** plain-English interpretations for AutoML metrics, exploratory root-cause results, what-if predictions, and analysis plans. It distinguishes observations from interpretations and repeatedly warns that association is not causation.
 - **Phase 7 UI improvements:** readable explanations appear alongside raw values for model evaluation, root-cause exploration, scenario prediction, and reasoning plans. Raw results remain available for transparency.
-- **Local accounts:** account registration and sign-in, salted PBKDF2 password hashes, SQLite storage, password confirmation, and persistent special-access status.
-- **Special access:** only the authenticated owner can grant or revoke special access from the Phase 9 command center. Registration codes cannot grant this privilege.
+- **Local accounts:** account registration and sign-in, salted PBKDF2 password hashes, SQLite storage, password confirmation, and persistent special-access status after a one-time special code is entered during registration.
+- **Special code configuration:** set `PREDICTAI_SPECIAL_ACCESS_CODE` in `.env`. Use a long random secret and keep `.env` private. If the variable is unset, no registration can receive special access.
 
 ## Install and run (macOS)
 
@@ -18,7 +18,7 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 python -m pip install pytest
 # If you do not already have a .env file, copy .env.example to .env.
-# Edit .env privately; configure Cloudflare credentials and owner bootstrap as needed.
+# Edit .env privately; configure Cloudflare credentials and an optional special-access code.
 streamlit run app.py
 ```
 
